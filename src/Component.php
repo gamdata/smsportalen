@@ -9,7 +9,7 @@ use yii\base\Exception;
  * The wrapper is for Yii Framework v2.
  *
  * Please note that the Yii Framework is not required in this package to avoid
- * users
+ * users downloading the complete framework when it is not necessary.
  */
 class Component extends \yii\base\Component {
 
@@ -36,6 +36,12 @@ class Component extends \yii\base\Component {
      * @var int
      */
     public $priority = 1;
+
+    /**
+     * If component is in debug mode, then no sms is sent.
+     * @var bool
+     */
+    public $debug = false;
 
     /**
      * A cached Api object, created the first time you send SMS.
@@ -72,6 +78,7 @@ class Component extends \yii\base\Component {
     public function send(array $recipients, $message, $priority=null) {
         if (is_null($this->api)) {
             $this->api = new Api($this->username, $this->token, $this->baseUrl);
+            if ($this->debug) { $this->api->setDebugMode(); }
         }
         return $this->api->send($recipients, $message, $priority);
     }

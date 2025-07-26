@@ -7,6 +7,8 @@ namespace gdata\smsportalen;
  */
 class Api {
 
+    const VERSION = "0.1.1-beta";
+
     /**
      * The base URL for the API. This base url contains scheme + "://" + and hostname, example "https://www.example.com"
      * @var string
@@ -17,6 +19,8 @@ class Api {
     private $token;
 
     private $validPriorities = [1,2,3,4,5,6,7,8,9];
+
+    private $debug = false;
 
     const DEFAULT_PRIORITY = 2;
 
@@ -137,6 +141,32 @@ class Api {
         }
     }
 
+    /**
+     * Turn debug mode on or off.
+     * Debug mode will simulate sending SMS with a made up reponse.
+     * @param bool $value
+     * @return self
+     */
+    public function setDebugMode($value=true) {
+        $this->debug = $value;
+        return $this;
+    }
+
+    /**
+     * Get a reponse for the simulation of sending SMS (debug mode)
+     * @param string[] $recipients The recipients list for setting the corret number in response
+     * @return Response
+     * @throws \Exception
+     */
+    private function getSimulationResponse(array $recipients) {
+        $responseData = [
+            'status'=>200,
+            'message'=>'200 OK',
+            'scheduled_recipients_count'=>count($recipients),
+        ];
+        return new Response(json_encode($responseData));
+    }
+
 
     /**
      * Send an SMS
@@ -153,32 +183,35 @@ class Api {
     public function send(array $phonenumbers, $message, $priority=0) {
         $this->validatePhonenumbers($phonenumbers);
         $priority = $this->validatePriority($priority);
-        $uri = $this->baseUrl.'/message/free';
-        $payload = [
-            'recipients' => $phonenumbers,
-            'content' => $message,
-            'priority' => $priority,
-        ];
-        $jsonPayload = json_encode($payload);
 
-        $response = \Httpful\Request::post($uri)->
-            basicAuth($this->username, $this->token)->
-            sends('application/json')->
-            parseWith(function($body) {
-                return json_decode($body, true);
-            })->
-            body($jsonPayload)->
-            send();
-
-        try {
-            $answer = new Response($response->raw_body);
-            return $answer;
+        if ($this->debug) {
+            return $this->getSimulationResponse($phonenumbers);
         }
-        catch (\Exception $e) {
-            // Throw exception from response further, but add a code that specifies where the error happened
-            throw new \Exception($e->getMessage(), self::EXCEPTION_CODE_RESPONSE_PARSE_FAIL);
-        }
+        else {
+            $uri = $this->baseUrl . '/message/free';
+            $payload = [
+                'recipients' => $phonenumbers,
+                'content' => $message,
+                'priority' => $priority,
+            ];
+            $jsonPayload = json_encode($payload);
 
+            $response = \Httpful\Request::post($uri)->
+                basicAuth($this->username, $this->token)->
+                sends('application/json')->
+                parseWith(function ($body) {
+                    return json_decode($body, true);
+                })->
+                body($jsonPayload)->
+                send();
+            try {
+                $answer = new Response($response->raw_body);
+                return $answer;
+            } catch (\Exception $e) {
+                // Throw exception from response further, but add a code that specifies where the error happened
+                throw new \Exception($e->getMessage(), self::EXCEPTION_CODE_RESPONSE_PARSE_FAIL);
+            }
+        }
     }
 
     /**

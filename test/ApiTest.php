@@ -163,4 +163,26 @@ class ApiTest extends TestCase {
         }
     }
 
+    public function testDebugMode() {
+        $api = new Api('tempuser', 'wrongtoken');
+        $api->setDebugMode(true);
+        $response = $api->send(['90000000'], 'test in debug mode');
+
+        // Test that the simulated response is as expected
+        $this->assertInstanceOf(Response::class, $response);
+        $this->assertEquals(1, $response->scheduled_recipients_count);
+        $this->assertEquals(200, $response->status);
+
+        // Test exception on invalid phone number
+        try {
+            $invalidRecipient = ['900000000'];
+            $response = $api->send($invalidRecipient, 'test in debug mode');
+            $this->fail('Code fails to throw exception when invalid phone number in debug mode');
+        }
+        catch (\Exception $e) {
+            $this->assertEquals(Api::EXCEPTION_CODE_PHONENUMBER_INVALID, $e->getCode());
+        }
+
+    }
+
 }
