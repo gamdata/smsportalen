@@ -8,7 +8,7 @@ sende SMS fra et web-grensesnitt. Det er ingen faste avgifter ved tjenesten,
 kun kostnaden per SMS.
 
 Koden i denne pakken er for å integrere SMS-sending i PHP-applikasjoner samt
-en modul som integrerer SMS-sending i applikasjoner som kjører Yii Framework 2.
+en modul som integrerer SMS-sending i applikasjoner som kjører [Yii Framework 2](https://www.yiiframework.com/).
 
 https://www.smsportalen.no/
 
@@ -16,7 +16,7 @@ Denne koden er utviklet av [Gammelsæter Data](https://www.gdata.no/).
 Smsportalen.no er utviklet av [IT Data AS (Adcom Molde)](https://adcom.no/).
 
 ## Tilgang
-Du må ta kontakt med Adcom Molde for å opprette et kundeforhold og få en brukerkonto. 
+Du må ta kontakt med [Adcom Molde](https://www.smsportalen.no/) for å opprette et kundeforhold og få en brukerkonto. 
 
 ## Gyldige telefonnummer
 API-et støtter kun norske mobiltelefonnummer eller 12-sifrede 
@@ -39,7 +39,7 @@ $token = 'jf340fj430fj430fj0rjf30jgf043hg043gh(H';
 
 try {
     $api = new Api($username, $token);
-    // $api->setDebugMode(); // Uncomment this to set in debug mode (not sending SMS) 
+    // $api->setDebugMode(); // Uncomment this to set in debug mode (=not sending SMS) 
     $api->send(['90000000', '40000000'], 'Dette er en test på SMS');
 }
 catch (\Exception $e) {
@@ -99,5 +99,8 @@ $api->send(['90000000','4000000'], 'Content of SMS');
 
 ## Debug-modus
 Debug-modus vil ikke sende SMS, men du vil få en simulert sending med en respons som sier
-at SMS ble sendt. Merk at send-metoden fremdelse vil validere telefonnumrene og prioritering
+at SMS ble sendt. Merk at send-metoden fremdeles vil validere telefonnumrene og prioritering
 som vanlig.
+
+## Unit-testing
+Du kan kjøre unit-testing med kommando `composer test`.

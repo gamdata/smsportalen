@@ -7,7 +7,7 @@ namespace gdata\smsportalen;
  */
 class Api {
 
-    const VERSION = "0.1.1-beta";
+    const VERSION = "0.1.2-beta";
 
     /**
      * The base URL for the API. This base url contains scheme + "://" + and hostname, example "https://www.example.com"
@@ -21,6 +21,8 @@ class Api {
     private $validPriorities = [1,2,3,4,5,6,7,8,9];
 
     private $debug = false;
+
+    private $defaultBaseUrl = 'https://smsportalen.no/';
 
     const DEFAULT_PRIORITY = 2;
 
@@ -45,12 +47,12 @@ class Api {
      * Constructor
      * @param string $username
      * @param string $token
-     * @param string $baseUrl
+     * @param string $baseUrl Defaults to null which uses default url https://smsportalen.no/
      */
-    public function __construct($username, $token, $baseUrl = 'https://smsportalen.no') {
+    public function __construct($username, $token, $baseUrl=null) {
         $this->username = $username;
         $this->token = $token;
-        $this->setBaseUrl($baseUrl);
+        $this->setBaseUrl(is_null($baseUrl) ? $this->defaultBaseUrl : $baseUrl);
     }
 
 
