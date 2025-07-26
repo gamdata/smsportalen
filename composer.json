@@ -1,0 +1,38 @@
+{
+    "name": "gdata/smsportalen",
+    "description": "Code for accessing API at smsportalen.no",
+    "version": "0.1-beta",
+    "type": "library",
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "autoload": {
+        "psr-4": {
+            "gdata\\smsportalen\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "gdata\\smsportalen\\test\\": "test/",
+            "yii\\": "vendor/yiisoft/yii2"
+        }
+    },
+    "authors": [
+        {
+            "name": "Pål Gammelsæter",
+            "email": "paalgam@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.4",
+        "nategood/httpful": "^0.3",
+        "ext-json": "*",
+        "ext-ctype": "*"
+    },
+    "require-dev":{
+        "phpunit/phpunit": ">=9.6",
+        "yiisoft/yii2": "^2.0.13-dev"
+    },
+    "scripts": {
+        "test": "./vendor/bin/phpunit test --bootstrap test/bootloader.php"
+    }
+}
